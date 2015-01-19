@@ -138,4 +138,6 @@
 	
     <color name="itemcolcor">#fff1f6fc</color>
 	
+    <drawable name="window_background">#ffffff</drawable>
+    
 </resources>

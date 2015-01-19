@@ -63,6 +63,24 @@
             android:launchMode="singleTop"
             android:theme="@style/Default.SwipeBack.NoTitleBar" >
         </activity>
+        <activity
+            android:name="com.hua.test.activity.TestActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Default.SwipeBack.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.hua.test.activity.PictureSinaActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Default.SwipeBack.NoTitleBar" >
+        </activity>
     </application>
 
 </manifest>

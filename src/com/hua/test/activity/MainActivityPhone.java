@@ -38,6 +38,7 @@ import com.hua.test.fragment.TestFragment;
 import com.hua.test.fragment.YuLeFragment;
 import com.hua.test.utils.LogUtils2;
 import com.hua.test.view.ColumnHorizontalScrollView;
+import com.hua.test.view.CustomerToast;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -135,7 +136,7 @@ public class MainActivityPhone extends BaseSlidingFragmentActivity{
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	context = getApplicationContext();
-    	requestWindowFeature(Window.FEATURE_NO_TITLE);
+//    	requestWindowFeature(Window.FEATURE_NO_TITLE);
     	initSlidingMenu();
     	setContentView(R.layout.home_main);
     	initContentView();
@@ -178,7 +179,8 @@ public class MainActivityPhone extends BaseSlidingFragmentActivity{
 			finish();
 		} else {
 			firstTime = System.currentTimeMillis();
-				Toast.makeText(context, "tuichu", 300).show();
+//				Toast.makeText(context, "tuichu", 300).show();
+				CustomerToast.makeText(context, getResources().getString(R.string.press_again_exit), 1000, 0.35f).show();
 		}
 	}
 
@@ -214,9 +216,9 @@ public class MainActivityPhone extends BaseSlidingFragmentActivity{
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int screenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
-        LogUtils2.i("**initSlidingMenu********");
+//        LogUtils2.i("**initSlidingMenu********");
 		setBehindContentView(R.layout.main_left_layout);// 设置左菜单，就是向右滑动显示出来的菜单
-		LogUtils2.d("**initSlidingMenu********");
+//		LogUtils2.d("**initSlidingMenu********");
 		FragmentTransaction mFragementTransaction = getSupportFragmentManager()
 				.beginTransaction();
 		Fragment mFrag = new LeftContentFragment();
@@ -234,7 +236,7 @@ public class MainActivityPhone extends BaseSlidingFragmentActivity{
 //		mSlidingMenu.setSecondaryShadowDrawable(R.drawable.shadow_right);// 设置右菜单阴影图片
 		mSlidingMenu.setFadeEnabled(true);// 设置滑动时菜单的是否淡入淡出
 		mSlidingMenu.setBehindScrollScale(0.333f);// 设置滑动时拖拽效果
-		LogUtils2.e("************initSlidingMenu");
+//		LogUtils2.e("************initSlidingMenu");
     }
 
     private void initViewPager() {
