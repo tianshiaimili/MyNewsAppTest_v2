@@ -45,13 +45,13 @@ public class ImageAdapter extends BaseAdapter {
     		context = tempContext;
     	}
     	
-    	if(lists == null){
-    		LogUtils2.i("***********NewAdapter.lists==null******");
-    		 lists = new ArrayList<String>();
-    	}else {
-    		LogUtils2.d("***********NewAdapter.lists != null******");
-			lists = getLists();
-		}
+//    	if(lists == null){
+//    		LogUtils2.i("***********NewAdapter.lists==null******");
+//    		 lists = new ArrayList<String>();
+//    	}else {
+//    		LogUtils2.d("***********NewAdapter.lists != null******");
+//			lists = getLists();
+//		}
     	
     }
 

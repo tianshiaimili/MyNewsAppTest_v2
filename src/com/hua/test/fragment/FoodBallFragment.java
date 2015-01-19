@@ -18,8 +18,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 
+import com.hua.test.activity.BaseActivity;
+import com.hua.test.activity.DetailsActivity;
+import com.hua.test.activity.ImageDetailActivity;
 import com.hua.test.activity.R;
 import com.hua.test.adapter.CardsAnimationAdapter;
 import com.hua.test.adapter.FoodBallAdapter;
@@ -49,7 +54,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
     protected SwipeRefreshLayout swipeLayout;
 //    @ViewById(R.id.listview)
     /*** 整个布局的listview*/
-    protected SwipeListView mListView;
+    protected SwipeListView mSwipeListView;
 //    @ViewById(R.id.progressBar)
     protected ProgressBar mProgressBar;
     /**作为head bar部分 的图片的跳转对应连接的url集合*/
@@ -60,7 +65,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 //    @Bean
     protected FoodBallAdapter foodBallAdapter;
     /**数据集合 ,用于点击item时 传入的数据*/
-    protected List<NewModle> listsModles;
+    protected List<NewModle> listsModles = new ArrayList<NewModle>();
     /**全局的View*/
     private View contentView;
     /***/
@@ -100,7 +105,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
     private void init() {
     	LogUtils2.d("what is the value of index = "+index);
     	mContext = getActivity();
-        listsModles = new ArrayList<NewModle>();
+//        listsModles = new ArrayList<NewModle>();
         url_maps = new HashMap<String, String>();
 
         newHashMap = new HashMap<String, NewModle>();
@@ -109,30 +114,30 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	public void initContentView(View tempContentView){
 		
 		swipeLayout = (SwipeRefreshLayout) tempContentView.findViewById(R.id.swipe_container);
-		mListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
+		mSwipeListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
 		mProgressBar = (ProgressBar) tempContentView.findViewById(R.id.progressBar);
 		
 //    	LogUtils2.e("*******initView*************");
     	LogUtils2.e("*******index*************== "+index);
         swipeLayout.setOnRefreshListener(this);
         InitView.instance().initSwipeRefreshLayout(swipeLayout);
-        InitView.instance().initListView(mListView, getActivity());
+        InitView.instance().initListView(mSwipeListView, getActivity());
 		///add HeadView
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.head_item, null);
         mDemoSlider = (SliderLayout) headView.findViewById(R.id.slider);
-        mListView.addHeaderView(headView);
+        mSwipeListView.addHeaderView(headView);
         
         //set the adapter of ListView
 //        newAdapter = new NewAdapter(mContext);
         foodBallAdapter = FoodBallAdapter.getFoodBallAdapter(mContext);
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(foodBallAdapter);
-        animationAdapter.setAbsListView(mListView);
-        mListView.setAdapter(animationAdapter);
+        animationAdapter.setAbsListView(mSwipeListView);
+        mSwipeListView.setAdapter(animationAdapter);
         
         ///load data
         loadData(getCommonUrl(index + "", Url.FootId),this.getClass().getSimpleName());
 
-        mListView.setOnBottomListener(new OnClickListener() {
+        mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentPagte++;
@@ -142,7 +147,9 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
             }
         });
         
-        mListView.setOnScrollListener(new OnScrollListener() {
+        mSwipeListView.setOnItemClickListener(new MyFoodBallListViewItemListener());
+        
+        mSwipeListView.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -183,7 +190,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
-            mListView.onBottomComplete();
+            mSwipeListView.onBottomComplete();
             mProgressBar.setVisibility(View.GONE);
             getMyActivity().showShortToast(getString(R.string.not_network));
             String result = getMyActivity().getCacheStr(cacheFragmentName + currentPagte);
@@ -261,8 +268,11 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	        	LogUtils2.i("add data to the listView************");
 	        	foodBallAdapter.appendList(list,index);
 	        }
-	        listsModles.addAll(list);
-	        mListView.onBottomComplete();
+	        
+	        if(foodBallAdapter.isNeedUplistsModlesData(index)){
+	        	listsModles.addAll(list);
+	        }
+	        mSwipeListView.onBottomComplete();
 	    }
 		
 	    private class GetDataTask extends AsyncTask<String, Void, String> {
@@ -321,26 +331,6 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
         }, 2000);
     }
 
-    
-//    @ItemClick(R.id.listview)
-    protected void onItemClick(int position) {
-//        NewModle newModle = listsModles.get(position - 1);
-//        enterDetailActivity(newModle);
-    }
-
-    public void enterDetailActivity(NewModle newModle) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("newModle", newModle);
-        Class<?> class1;
-        if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
-//            class1 = ImageDetailActivity_.class;
-        } else {
-//            class1 = DetailsActivity_.class;
-        }
-//        ((BaseActivity) getActivity()).openActivity(class1,
-//                bundle, 0);
-    }
-
 //  @Background
     public void loadNewList(String url) {
   	LogUtils2.i("loadNewList.url = "+url);
@@ -357,14 +347,6 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
     
     
     
-
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-        NewModle newModle = newHashMap.get(slider.getUrl());
-        enterDetailActivity(newModle);
-    }
-
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -380,7 +362,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		LogUtils2.i("***onCreate***");
+		LogUtils2.w("***onCreate***");
 		mContext = getActivity();
 		
 	}
@@ -389,7 +371,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		LogUtils2.i("***onViewCreated***");
+		LogUtils2.w("***onViewCreated***");
 	}
 	
 	
@@ -397,20 +379,20 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		LogUtils2.i("***onActivityCreated***");
+		LogUtils2.w("***onActivityCreated***");
 	}
 	
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		LogUtils2.i("***onStart***");
+		LogUtils2.w("***onStart***");
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		LogUtils2.i("***onResume***");
+		LogUtils2.w("***onResume***");
 		MobclickAgent.onPageStart("MainScreen"); // 统计页面
 	}
 
@@ -419,4 +401,53 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
         super.onPause();
         MobclickAgent.onPageEnd("MainScreen");
     }
+
+    @Override
+    public void onStop() {
+    	super.onStop();
+    	LogUtils2.w("***onStop***");
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	LogUtils2.w("***onDestroy***");
+//    	foodBallAdapter.getLists().clear();
+    }
+    
+	class MyFoodBallListViewItemListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+//			LogUtils2.e("in the onItemClick the position = "+position);
+//			Toast.makeText(mContext, "  pos== "+position, 300).show();
+			   NewModle newModle = listsModles.get(position - 1);
+		        enterDetailActivity(newModle);
+			
+		}
+		
+	}
+
+	//open the head bar pic
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+        NewModle newModle = newHashMap.get(slider.getUrl());
+        enterDetailActivity(newModle);
+    }
+
+    public void enterDetailActivity(NewModle newModle) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("newModle", newModle);
+        Class<?> class1;
+        if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
+            class1 = ImageDetailActivity.class;
+        } else {
+            class1 = DetailsActivity.class;
+        }
+        ((BaseActivity) getActivity()).openActivity(class1,
+                bundle, 0);
+    }
+	
+
 }

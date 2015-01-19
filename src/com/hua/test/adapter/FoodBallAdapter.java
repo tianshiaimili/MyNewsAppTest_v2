@@ -19,6 +19,7 @@ public class FoodBallAdapter extends BaseAdapter {
     private Context context;
     private static FoodBallAdapter mNewAdapter;
     private int oldIndex = -1;
+    private boolean isNeedUplistsModlesData;
 
     public void appendList(List<NewModle> list,int newIndex) {
     	LogUtils2.d("list---"+list.size());
@@ -32,6 +33,7 @@ public class FoodBallAdapter extends BaseAdapter {
 			}
             LogUtils2.e("*********lists.size==***== " +lists.size());
         }
+        isNeedUplistsModlesData = true;
         notifyDataSetChanged();
     }
 
@@ -59,6 +61,9 @@ public class FoodBallAdapter extends BaseAdapter {
     	
     }
 
+    public boolean isNeedUplistsModlesData(int newIndex){
+    	return isNeedUplistsModlesData;
+    }
 
     public List<NewModle> getLists() {
 		return lists;

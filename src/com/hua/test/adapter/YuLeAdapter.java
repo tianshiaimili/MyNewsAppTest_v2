@@ -19,10 +19,11 @@ public class YuLeAdapter extends BaseAdapter {
     private Context context;
     private static YuLeAdapter mNewAdapter;
     private int oldIndex = -1;
+    private boolean isNeedUplistsModlesData;
 
     public void appendList(List<NewModle> list,int newIndex) {
-    	LogUtils2.d("list---"+list.size());
-    	LogUtils2.i("newIndex = "+newIndex+"   oldIndex = "+oldIndex);
+//    	LogUtils2.d("list---"+list.size());
+//    	LogUtils2.i("newIndex = "+newIndex+"   oldIndex = "+oldIndex);
         if (!lists.contains(list.get(0)) && list != null && list.size() > 0 && newIndex != oldIndex) {
             lists.addAll(list);
             if(newIndex == 0){
@@ -30,8 +31,9 @@ public class YuLeAdapter extends BaseAdapter {
             }else {
             	oldIndex = newIndex;
 			}
-            LogUtils2.e("*********lists.size==***== " +lists.size());
+//            LogUtils2.e("*********lists.size==***== " +lists.size());
         }
+        isNeedUplistsModlesData = true;
         notifyDataSetChanged();
     }
 
@@ -57,6 +59,11 @@ public class YuLeAdapter extends BaseAdapter {
 			lists = getLists();
 		}
     	
+    }
+
+
+    public boolean isNeedUplistsModlesData(int newIndex){
+    	return isNeedUplistsModlesData;
     }
 
 

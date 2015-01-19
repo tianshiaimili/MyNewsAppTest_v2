@@ -19,19 +19,24 @@ public class NewAdapter extends BaseAdapter {
     private Context context;
     private static NewAdapter mNewAdapter;
     private int oldIndex = -1;
+    private boolean isNeedUplistsModlesData;
 
     public void appendList(List<NewModle> list,int newIndex) {
     	LogUtils2.d("list---"+list.size());
     	LogUtils2.i("newIndex = "+newIndex+"   oldIndex = "+oldIndex);
+    	isNeedUplistsModlesData = false;
         if (!lists.contains(list.get(0)) && list != null && list.size() > 0 && newIndex != oldIndex) {
             lists.addAll(list);
             if(newIndex == 0){
+            	isNeedUplistsModlesData = true;
             	oldIndex = -1;
             }else {
+            	isNeedUplistsModlesData = true;
             	oldIndex = newIndex;
 			}
             LogUtils2.e("*********lists.size==***== " +lists.size());
         }
+        LogUtils2.d("the data lists.size == " +lists.size());
         notifyDataSetChanged();
     }
 
@@ -60,6 +65,10 @@ public class NewAdapter extends BaseAdapter {
     }
 
 
+    public boolean isNeedUplistsModlesData(int newIndex){
+    	return isNeedUplistsModlesData;
+    }
+    
     public List<NewModle> getLists() {
 		return lists;
 	}
@@ -95,7 +104,7 @@ public class NewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+    	LogUtils2.w("what is the positon in the getView position = "+position);
         NewItemView newItemView;
 
         if (convertView == null) {
@@ -105,7 +114,7 @@ public class NewAdapter extends BaseAdapter {
         } else {
             newItemView = (NewItemView) convertView;
         }
-
+        LogUtils2.i("in getView the lists.size = "+lists.size());
         NewModle newModle = lists.get(position);
         if (newModle.getImagesModle() == null) {
             newItemView.setTexts(newModle.getTitle(), newModle.getDigest(),

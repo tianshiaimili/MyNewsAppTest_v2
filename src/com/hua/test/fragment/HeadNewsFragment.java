@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -71,7 +72,7 @@ OnSliderClickListener{
 //    @Bean
     protected NewAdapter newAdapter;
     /**数据集合 ,用于点击item时 传入的数据*/
-    protected List<NewModle> listsModles;
+    protected List<NewModle>  listsModles = new ArrayList<NewModle>();
     private int index = 0;
     private boolean isRefresh = false;
     /**全局的View*/
@@ -94,14 +95,6 @@ OnSliderClickListener{
     private int oldScrollDistance;
     private boolean isHideTabItem;
     private boolean isFirstScroll;
-    
-    
-//	private static final int STATE_ONSCREEN = 0;
-//	private static final int STATE_OFFSCREEN = 1;
-//	private static final int STATE_RETURNING = 2;
-//	private int mState = STATE_ONSCREEN;
-//	private int mScrollY;
-//	private int mMinRawY = 0;
     private boolean isDownAnimationOver;
     private boolean isUpAnimationOver;
 	private TranslateAnimation anim;
@@ -112,34 +105,10 @@ OnSliderClickListener{
 			int numchange = what;
 //			LogUtils2.i("what==" + what);
 			switch (what) {
-
-			// case START_BAR:
-			// if (mViewPager != null) {
-			// LogUtils2.d("999999999utyuiyiyiuyui");
-			// mViewPager.setCurrentItem(currentItem);
-			// LogUtils2.d("mViewPager.getCurrentItem()=="
-			// + mViewPager.getCurrentItem());
-			// adapter.notifyDataSetChanged();
-			//
-			// }
-			//
 			case RESPONSE_OK:
 				String result = (String) message.obj;
 				getResult(result);
-				// mHandler.obtainMessage(ShowFootView).sendToTarget();
 				break;
-			//
-			// case ShowFootView:
-			// if(mFooterView.getVisibility() == View.GONE){
-			// mFooterView.setVisibility(View.VISIBLE);
-			// }
-			// isShowFirstIn = true;
-			// /**
-			// * 停止加载更多 恢复原样
-			// */
-			// stopLoadMore();
-			//
-			// break;
 			default:
 				break;
 			}
@@ -151,7 +120,8 @@ OnSliderClickListener{
     private void init() {
     	LogUtils2.d("what is the value of index = "+index);
     	mContext = getActivity();
-        listsModles = new ArrayList<NewModle>();
+//        listsModles = new ArrayList<NewModle>();
+        LogUtils2.d("what is the value of listsModles.size  = "+listsModles.size());
         url_maps = new HashMap<String, String>();
 
         newHashMap = new HashMap<String, NewModle>();
@@ -179,12 +149,8 @@ OnSliderClickListener{
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(newAdapter);
         animationAdapter.setAbsListView(mSwipeListView);
         mSwipeListView.setAdapter(animationAdapter);
-//        buttomLayoutTabItem = MainActivityPhone.getTab_Bar_Container();
-//        buttomLayoutTabItem.setVisibility(View.GONE);
-        
-//        buttomLayoutTabItemHeight = buttomLayoutTabItem.getHeight();
-        ///load data
-        loadData(getNewUrl(index + ""));
+        LogUtils2.d("what is the value of index  = "+index);
+        loadData(getNewUrl(index + ""),this.getClass().getSimpleName());
 
         mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
@@ -192,13 +158,13 @@ OnSliderClickListener{
                 currentPagte++;
                 index = index + 20;
                 LogUtils2.i("onButtomListener  the index is "+index);
-                loadData(getNewUrl(index + ""));
+                loadData(getNewUrl(index + ""),this.getClass().getSimpleName());
             }
         });
         
         
-        mSwipeListView.setSwipeListViewListener(mSwipeListViewListener);
-        mSwipeListView.setOnItemClickListener(new MySwipeListViewItemListener());
+//        mSwipeListView.setSwipeListViewListener(mSwipeListViewListener);
+        mSwipeListView.setOnItemClickListener(new MyHeadNewsListViewItemListener());
         
         mSwipeListView.setOnScrollListener(new OnScrollListener() {
 			
@@ -207,6 +173,12 @@ OnSliderClickListener{
 				LogUtils2.i("******onScrollStateChanged**********");
 				LogUtils2.i("what is the scrollY distance == "+view.getScrollY());
 				 
+				if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+					LogUtils2.e("the first posiont == "+mSwipeListView.getFirstVisiblePosition());
+					LogUtils2.e("the last posiont == "+mSwipeListView.getLastVisiblePosition());
+//					mSwipeListView.get
+				}
+				
 //				if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
 //					
 //					if(oldScrollDistance > getScrollY() && !isDownAnimationOver){
@@ -338,14 +310,14 @@ OnSliderClickListener{
 	}
 	
 	/**加载数据*/
-	public void loadData(String url){
+	public void loadData(String url,String cacheFragmentName){
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
             mSwipeListView.onBottomComplete();
             mProgressBar.setVisibility(View.GONE);
             getMyActivity().showShortToast(getString(R.string.not_network));
-            String result = getMyActivity().getCacheStr("NewsFragment" + currentPagte);
+            String result = getMyActivity().getCacheStr(cacheFragmentName + currentPagte);
             if (!StringUtils.isEmpty(result)) {
                 getResult(result);
             }
@@ -426,10 +398,13 @@ OnSliderClickListener{
         	LogUtils2.i("is first come in************");
             initSliderLayout(list);
         } else {
-        	LogUtils2.i("add data to the listView************");
+        	LogUtils2.d("add data to the listView and the list.size = "+ list.size());
         	newAdapter.appendList(list,index);
         }
-        listsModles.addAll(list);
+        if(newAdapter.isNeedUplistsModlesData(index)){
+        	listsModles.addAll(list);
+        }
+        LogUtils2.d(" the value of listsModles.size  = "+listsModles.size());
         mSwipeListView.onBottomComplete();//TODO
     }
     
@@ -482,53 +457,6 @@ OnSliderClickListener{
 		newAdapter.appendList(newModles,index);
 	}
     
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		LogUtils2.i("***onCreateView***");
-		contentView = inflater.inflate(R.layout.news_activity_main, null);
-		init() ;
-		initContentView(contentView);
-		return contentView;
-	}
-
-    
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		LogUtils2.i("***onCreate***");
-		
-	}
-	
-	
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		LogUtils2.i("***onViewCreated***");
-	}
-	
-	
-	
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		LogUtils2.i("***onActivityCreated***");
-	}
-	
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		LogUtils2.i("***onStart***");
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		LogUtils2.i("***onResume***");
-	}
-
 
 	//SwipeRefreshLayout.OnRefreshListener
 	@Override
@@ -541,7 +469,7 @@ OnSliderClickListener{
 				isRefresh = true;
 //				loadData(getCommonUrl(0 + "", Url.DianYingId));
 				index = 0;
-				loadData(getNewUrl(index + ""));
+				loadData(getNewUrl(index + ""),this.getClass().getSimpleName());
 				url_maps.clear();
 				mDemoSlider.removeAllSliders();
 			}
@@ -549,31 +477,96 @@ OnSliderClickListener{
 		
 	}
 
+	/////////////////////////////////////////
 
-	///OnSliderClickListener
+    
 	@Override
-	public void onSliderClick(BaseSliderView slider) {
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		LogUtils2.w("***onCreate***");
 		
 	}
 	
 	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		LogUtils2.w("***onCreateView***");
+		contentView = inflater.inflate(R.layout.news_activity_main, null);
+		init() ;
+		initContentView(contentView);
+		return contentView;
+	}
+
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		LogUtils2.w("***onViewCreated***");
+	}
+	
+	
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		LogUtils2.w("***onActivityCreated***");
+	}
+	
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		LogUtils2.w("***onStart***");
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		LogUtils2.w("***onResume***");
+	}
+
+	
+
+    @Override
+    public void onStop() {
+    	super.onStop();
+    	LogUtils2.w("***onStop***");
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	LogUtils2.w("***onDestroy***");
+//    	newAdapter.getLists().clear();
+    }
+    
+
+
 	/**
 	 * this is for the SwipeListView Listener
 	 */
-	BaseSwipeListViewListener mSwipeListViewListener = new BaseSwipeListViewListener() {
-		@Override
-		public void onClickFrontView(int position) {
-				Toast.makeText(mContext, "  pos== "+position, 300).show();
-			   NewModle newModle = listsModles.get(position - 1);
-		        enterDetailActivity(newModle);
-		}
-		
-		@Override
-		public void onClickBackView(int position) {
-			mSwipeListView.closeOpenedItems();// 关闭打开的项
-		}
-	};
+//	BaseSwipeListViewListener mSwipeListViewListener = new BaseSwipeListViewListener() {
+//		@Override
+//		public void onClickFrontView(int position) {
+//				Toast.makeText(mContext, "  pos== "+position, 300).show();
+//			   NewModle newModle = listsModles.get(position - 1);
+//		        enterDetailActivity(newModle);
+//		}
+//		
+//		@Override
+//		public void onClickBackView(int position) {
+//			mSwipeListView.closeOpenedItems();// 关闭打开的项
+//		}
+//	};
 	
+
+	///OnSliderClickListener
+	@Override
+	public void onSliderClick(BaseSliderView slider) {
+        NewModle newModle = newHashMap.get(slider.getUrl());
+        enterDetailActivity(newModle);
+	}
 	
 
     public void enterDetailActivity(NewModle newModle) {
@@ -581,33 +574,28 @@ OnSliderClickListener{
         bundle.putSerializable("newModle", newModle);
         Class<?> class1;
         if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
-           LogUtils2.i("******** ImageDetailActivity_.class**********");
+           LogUtils2.i("******** ImageDetailActivity_.class********** ImageList。size = "+newModle.getImagesModle().getImgList().size());
         	class1 = ImageDetailActivity.class;
         } else {
-        	  LogUtils2.i("******** DetailsActivity_.class**********");
+//        	  LogUtils2.i("******** DetailsActivity_.class**********");
             class1 = DetailsActivity.class;
         }
         
         ((BaseActivity) getActivity()).openActivity(class1,
                 bundle, 0);
-        // Intent intent = new Intent(getActivity(), class1);
-        // intent.putExtras(bundle);
-        // IntentUtils.startPreviewActivity(getActivity(), intent);
     }
 	
-	class MySwipeListViewItemListener implements OnItemClickListener{
+	class MyHeadNewsListViewItemListener implements OnItemClickListener{
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			
-			Toast.makeText(mContext, "  pos== "+position, 300).show();
+//			LogUtils2.e("in the onItemClick the position = "+position);
+//			Toast.makeText(mContext, "  pos== "+position, 300).show();
 			   NewModle newModle = listsModles.get(position - 1);
 		        enterDetailActivity(newModle);
 			
 		}
 		
 	}
-	
-	
 }

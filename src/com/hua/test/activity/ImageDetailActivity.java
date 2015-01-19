@@ -54,7 +54,8 @@ public class ImageDetailActivity extends SwipeBackActivity implements
 
 		mFlipView = (FlipView) findViewById(R.id.flip_view);
 		newTitle = (TextView) findViewById(R.id.new_title);
-		imageAdapter = ImageAdapter.getImageAdapter(getApplicationContext());
+//		imageAdapter = ImageAdapter.getImageAdapter(getApplicationContext());
+		imageAdapter = new ImageAdapter(getApplicationContext());
 		try {
 			newTitle.setText(titleString);
 			imageAdapter.appendList(imgList);
@@ -81,7 +82,7 @@ public class ImageDetailActivity extends SwipeBackActivity implements
 	@Override
 	public  void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_image);
 		init();
 		initView();
@@ -97,6 +98,6 @@ public class ImageDetailActivity extends SwipeBackActivity implements
 	public void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
-	}
+	} 
 
 }

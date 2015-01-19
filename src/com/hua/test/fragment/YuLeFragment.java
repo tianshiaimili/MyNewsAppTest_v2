@@ -17,14 +17,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 
+import com.hua.test.activity.BaseActivity;
+import com.hua.test.activity.DetailsActivity;
+import com.hua.test.activity.ImageDetailActivity;
 import com.hua.test.activity.R;
 import com.hua.test.adapter.CardsAnimationAdapter;
 import com.hua.test.adapter.YuLeAdapter;
 import com.hua.test.bean.NewModle;
 import com.hua.test.contants.Url;
+import com.hua.test.fragment.FoodBallFragment.MyFoodBallListViewItemListener;
 import com.hua.test.initView.InitView;
 import com.hua.test.network.http.json.NewListJson;
 import com.hua.test.network.utils.HttpUtil;
@@ -49,7 +55,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     protected SwipeRefreshLayout swipeLayout;
 //    @ViewById(R.id.listview)
     /*** 整个布局的listview*/
-    protected SwipeListView mListView;
+    protected SwipeListView mSwipeListView;
 //    @ViewById(R.id.progressBar)
     protected ProgressBar mProgressBar;
     /**作为head bar部分 的图片的跳转对应连接的url集合*/
@@ -60,7 +66,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 //    @Bean
     protected YuLeAdapter yuLeAdapter;
     /**数据集合 ,用于点击item时 传入的数据*/
-    protected List<NewModle> listsModles;
+    protected List<NewModle> listsModles = new ArrayList<NewModle>();
     /**全局的View*/
     private View contentView;
     /***/
@@ -100,7 +106,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private void init() {
     	LogUtils2.d("what is the value of index = "+index);
     	mContext = getActivity();
-        listsModles = new ArrayList<NewModle>();
+//        listsModles = new ArrayList<NewModle>();
         url_maps = new HashMap<String, String>();
 
         newHashMap = new HashMap<String, NewModle>();
@@ -109,30 +115,30 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 	public void initContentView(View tempContentView){
 		
 		swipeLayout = (SwipeRefreshLayout) tempContentView.findViewById(R.id.swipe_container);
-		mListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
+		mSwipeListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
 		mProgressBar = (ProgressBar) tempContentView.findViewById(R.id.progressBar);
 		
 //    	LogUtils2.e("*******initView*************");
     	LogUtils2.e("*******index*************== "+index);
         swipeLayout.setOnRefreshListener(this);
         InitView.instance().initSwipeRefreshLayout(swipeLayout);
-        InitView.instance().initListView(mListView, getActivity());
+        InitView.instance().initListView(mSwipeListView, getActivity());
 		///add HeadView
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.head_item, null);
         mDemoSlider = (SliderLayout) headView.findViewById(R.id.slider);
-        mListView.addHeaderView(headView);
+        mSwipeListView.addHeaderView(headView);
         
         //set the adapter of ListView
 //        newAdapter = new NewAdapter(mContext);
         yuLeAdapter = YuLeAdapter.getYuLeAdapter(mContext);
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(yuLeAdapter);
-        animationAdapter.setAbsListView(mListView);
-        mListView.setAdapter(animationAdapter);
+        animationAdapter.setAbsListView(mSwipeListView);
+        mSwipeListView.setAdapter(animationAdapter);
         
         ///load data
         loadData(getCommonUrl(index + "", Url.YuLeId),this.getClass().getSimpleName());
 
-        mListView.setOnBottomListener(new OnClickListener() {
+        mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentPagte++;
@@ -142,7 +148,9 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             }
         });
         
-        mListView.setOnScrollListener(new OnScrollListener() {
+        mSwipeListView.setOnItemClickListener(new MyYuLeListViewItemListener());
+        
+        mSwipeListView.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -183,7 +191,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
-            mListView.onBottomComplete();
+            mSwipeListView.onBottomComplete();
             mProgressBar.setVisibility(View.GONE);
             getMyActivity().showShortToast(getString(R.string.not_network));
             String result = getMyActivity().getCacheStr(cacheFragmentName + currentPagte);
@@ -255,14 +263,17 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 	        List<NewModle> list = NewListJson.instance(getActivity()).readJsonNewModles(result,
 	                Url.YuLeId);
 	        if (index == 0) {
-	        	LogUtils2.i("is first come in************");
+//	        	LogUtils2.i("is first come in************");
 	            initSliderLayout(list);
 	        } else {
-	        	LogUtils2.i("add data to the listView************");
+//	        	LogUtils2.i("add data to the listView************");
 	        	yuLeAdapter.appendList(list,index);
 	        }
-	        listsModles.addAll(list);
-	        mListView.onBottomComplete();
+	        
+	        if(yuLeAdapter.isNeedUplistsModlesData(index)){
+	        	listsModles.addAll(list);
+	        }
+	        mSwipeListView.onBottomComplete();
 	    }
 		
 	    private class GetDataTask extends AsyncTask<String, Void, String> {
@@ -321,25 +332,6 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         }, 2000);
     }
 
-    
-//    @ItemClick(R.id.listview)
-    protected void onItemClick(int position) {
-//        NewModle newModle = listsModles.get(position - 1);
-//        enterDetailActivity(newModle);
-    }
-
-    public void enterDetailActivity(NewModle newModle) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("newModle", newModle);
-        Class<?> class1;
-        if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
-//            class1 = ImageDetailActivity_.class;
-        } else {
-//            class1 = DetailsActivity_.class;
-        }
-//        ((BaseActivity) getActivity()).openActivity(class1,
-//                bundle, 0);
-    }
 
 //  @Background
     public void loadNewList(String url) {
@@ -357,14 +349,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     
     
     
-
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-        NewModle newModle = newHashMap.get(slider.getUrl());
-        enterDetailActivity(newModle);
-    }
-
-	
+    ////////////////////////////////////////
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -419,4 +404,57 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         super.onPause();
         MobclickAgent.onPageEnd("MainScreen");
     }
+    
+
+    @Override
+    public void onStop() {
+    	super.onStop();
+    	LogUtils2.w("***onStop***");
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	LogUtils2.w("***onDestroy***");
+//    	yuLeAdapter.getLists().clear();
+    }
+    
+    
+    ////////////////////////////////////////
+
+	class MyYuLeListViewItemListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+//			LogUtils2.e("in the onItemClick the position = "+position);
+//			Toast.makeText(mContext, "  pos== "+position, 300).show();
+			   NewModle newModle = listsModles.get(position - 1);
+		        enterDetailActivity(newModle);
+		}
+		
+	}
+
+	//open the head bar pic
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+        NewModle newModle = newHashMap.get(slider.getUrl());
+        enterDetailActivity(newModle);
+    }
+
+    public void enterDetailActivity(NewModle newModle) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("newModle", newModle);
+        Class<?> class1;
+        if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
+            class1 = ImageDetailActivity.class;
+        } else {
+            class1 = DetailsActivity.class;
+        }
+        ((BaseActivity) getActivity()).openActivity(class1,
+                bundle, 0);
+    }
+
+    
+    
 }
