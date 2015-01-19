@@ -10,7 +10,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.hua.test.activity.R;
-
+/**
+ * 左边的ListView Item 
+ * @author yue
+ *
+ */
 public class LeftContentFragment extends Fragment implements OnClickListener {
 
 	private LinearLayout contentLayout;

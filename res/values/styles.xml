@@ -1,17 +1,6 @@
 <resources>
 
-
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
+    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
@@ -30,7 +19,7 @@
         <item name="android:button">@null</item>
         <item name="android:background">@drawable/toggbutton_selector</item>
         <item name="android:gravity">center</item>
-    </style>
+    </style>
     -->
 
     <style name="setting_text_style">
@@ -86,16 +75,6 @@
         <item name="android:windowExitAnimation">@anim/layout_alpha_out</item>
     </style>
 
-    <!--
-         <style name="home_color_shopping_button">
-        <item name="android:textColor">#ff000000</item>
-        <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/color_shopping_button_bg</item>
-        <item name="android:padding">0.0dip</item>
-        <item name="android:layout_height">40.0dip</item>
-    </style>
-    -->
-
     <style name="ListViewStyle">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:cacheColorHint">@android:color/transparent</item>
@@ -125,7 +104,13 @@
 
     <style name="myProgressBarStyleLarge">
 
-　　                <item name="android:indeterminateDrawable">@drawable/progress_large_white</item>
+
+
+
+
+
+
+　　                                                                <item name="android:indeterminateDrawable">@drawable/progress_large_white</item>
     </style>
 
     <!-- 自定义loading dialog -->
@@ -144,7 +129,7 @@
         <item name="android:background">@drawable/bg_titlebar</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">@dimen/title_bar_height</item>
-    </style>
+    </style>
     -->
 
     <style name="top_update_count">
@@ -159,7 +144,7 @@
          <style name="item_title">
         <item name="android:textSize">16.0sp</item>
         <item name="android:textColor">@color/item_title</item>
-    </style>
+    </style>
     -->
 
     <style name="item_content">
@@ -173,7 +158,7 @@
         <item name="android:layout_width">@dimen/item_image_width</item>
         <item name="android:layout_height">@dimen/item_image_height</item>
         <item name="android:scaleType">centerCrop</item>
-    </style>
+    </style>
     -->
 
     <style name="item_image_gap">
@@ -185,8 +170,8 @@
     <style name="ProgressButton" />
 
     <!-- Base theme for the Progress button. -->
-    <!--
-         <style name="ProgressButton.Pin">
+
+    <style name="ProgressButton.Pin">
         <item name="progress">0</item>
         <item name="max">100</item>
         <item name="circleColor">@color/progress_default_circle_color</item>
@@ -203,24 +188,22 @@
         <item name="android:clickable">false</item>
         <item name="android:focusable">false</item>
     </style>
-    -->
+
     <!-- Base theme for the Progress button. -->
-    <!--
-         <style name="ProgressButton.Pin.Compat">
+
+    <style name="ProgressButton.Pin.Compat">
         <item name="android:background">@android:drawable/list_selector_background</item>
     </style>
-    -->
 
     <style name="ProgressButton.1">
         <!-- Default ! -->
     </style>
-    <!--
-   <style name="ProgressButton.2">
 
-        Starts pinned and is NOT clickable !
+    <style name="ProgressButton.2">
+
+        <!-- Starts pinned and is NOT clickable ! -->
         <item name="pinned">true</item>
     </style>
-    -->
 
     <style name="ProgressButton.Clickable">
 
@@ -228,29 +211,28 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
-    <!--
+
     <style name="ProgressButton.Clickable.3">
 
-        Starts pinned, and IS clickable !
+        <!-- Starts pinned, and IS clickable ! -->
         <item name="pinned">true</item>
     </style>
-    -->
-    <!--
+
     <style name="ProgressButton.Clickable.4">
 
+        <!--
         A styled progress button !
         You can also change the drawables (pinned, unpinned and/or shadow) !
-        <item name="pinnedDrawable">@drawable/pinned_custom</item> !
+        <item name="pinnedDrawable">@drawable/pinned_custom</item> !
+        -->
         <item name="circleColor">@color/holo_green_dark</item>
         <item name="progressColor">@color/holo_green_light</item>
     </style>
-    -->
-
 
     <!--
          <style name="detail_title_bar_style" parent="@style/title_bar_style">
         <item name="android:background">@drawable/detail_bg_titlebar</item>
-    </style>
+    </style>
     -->
 
     <style name="text_on_button">
@@ -268,7 +250,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minWidth">50.0dip</item>
         <item name="android:minHeight">30.0dip</item>
-    </style>
+    </style>
     -->
 
 
@@ -281,7 +263,7 @@
         <item name="android:paddingLeft">17.0dip</item>
         <item name="android:paddingRight">17.0dip</item>
         <item name="android:layout_centerVertical">true</item>
-    </style>
+    </style>
     -->
     <!--
      <style name="title_view" parent="@style/title_bar_button">
@@ -294,14 +276,14 @@
         <item name="android:minHeight">44.0dip</item>
         <item name="android:clickable">true</item>
         <item name="android:drawablePadding">0.0dip</item>
-    </style>
+    </style>
     -->
 
 
     <!--
          <style name="back_view" parent="@style/title_view">
         <item name="android:drawableLeft">@drawable/btn_back</item>
-    </style>
+    </style>
     -->
 
     <style name="title_text_style">
@@ -316,7 +298,7 @@
     <style name="detail_back_view" parent="@style/back_view">
         <item name="android:background">@drawable/transparent</item>
         <item name="android:drawableLeft">@drawable/btn_back_detail</item>
-    </style>
+    </style>
     -->
 
 
@@ -330,7 +312,7 @@
     </style>
     <style name="SlideAppTheme" parent="@android:style/Theme.NoTitleBar">
         <item name="android:windowAnimationStyle">@style/ActivityTransitions</item>
-    </style>
+    </style>
     -->
 
 
@@ -372,6 +354,111 @@
         <item name="android:paddingLeft">35dp</item>
         <item name="android:gravity">left|center_vertical</item>
     </style>
-    
-    
+
+    <style name="title_bar_style">
+        <item name="android:background">@drawable/bg_titlebar</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/title_bar_height</item>
+    </style>
+
+    <style name="detail_title_bar_style" parent="@style/title_bar_style">
+        <item name="android:background">@drawable/detail_bg_titlebar</item>
+    </style>
+
+    <style name="common_button" parent="@style/text_on_button">
+        <item name="android:background">@drawable/btn_common</item>
+        <item name="android:paddingLeft">6.0dip</item>
+        <item name="android:paddingRight">6.0dip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">50.0dip</item>
+        <item name="android:minHeight">30.0dip</item>
+    </style>
+
+    <style name="title_bar_button" parent="@style/common_button">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">@color/btn_common_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingLeft">17.0dip</item>
+        <item name="android:paddingRight">17.0dip</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="title_view" parent="@style/title_bar_button">
+        <item name="android:gravity">right|center</item>
+        <item name="android:background">@drawable/transparent</item>
+        <item name="android:paddingLeft">12.0dip</item>
+        <item name="android:paddingRight">0.0dip</item>
+        <item name="android:layout_marginLeft">0.0dip</item>
+        <item name="android:layout_marginRight">0.0dip</item>
+        <item name="android:minHeight">44.0dip</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawablePadding">0.0dip</item>
+    </style>
+
+    <style name="back_view" parent="@style/title_view">
+        <item name="android:drawableLeft">@drawable/btn_back</item>
+    </style>
+
+    <style name="detail_back_view" parent="@style/back_view">
+        <item name="android:background">@drawable/transparent</item>
+        <item name="android:drawableLeft">@drawable/btn_back_detail</item>
+    </style>
+
+    <!--
+    下面 是设置activity进入和退出的默认的style的动画和Theme
+    SwipeListView涉及到
+    -->
+
+    <style name="Default" parent="@android:style/Theme">
+        <item name="android:textColorPrimaryInverse">@android:color/black</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleSize">@dimen/title_bar_height</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+        <item name="android:listViewStyle">@style/customListView</item>
+        <item name="android:windowAnimationStyle">@style/actAnimation</item>
+    </style>
+
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="customListView" parent="@android:style/Widget.ListView">
+        <item name="android:scrollingCache">false</item>
+        <item name="android:cacheColorHint">@null</item>
+    </style>
+
+    <!--
+         Activity的进入和退出效果可以通过@android:activityOpenEnterAnimation，
+         @android:activityOpenExitAnimation，
+         @android:activityCloseEnterAnimation，
+         @android:activityCloseExitAnimation
+         这几个item设定，第一个表示新的activity创建进入效果，第2个表示activity还没有finish()下退出效果，
+         第3个表示上一个activity返回进入效果，第4个表示的是activity finish()之后退出效果...（好似有点乱了）。具体设置参考如下:
+    -->
+    <style name="actAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_new</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_back</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_finish</item>
+        <item name="android:taskOpenEnterAnimation">@anim/activity_new</item>
+        <item name="android:taskOpenExitAnimation">@anim/activity_out</item>
+        <item name="android:taskCloseEnterAnimation">@anim/activity_back</item>
+        <item name="android:taskCloseExitAnimation">@anim/activity_finish</item>
+    </style>
+
+    <style name="Default.NoTitleBar" parent="@style/Default">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- 这里设置当点击进入一个新的acitvity后新的activity样式 -->
+    <style name="Default.SwipeBack" parent="@style/Default">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="Default.SwipeBack.NoTitleBar" parent="@style/Default.SwipeBack">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 </resources>

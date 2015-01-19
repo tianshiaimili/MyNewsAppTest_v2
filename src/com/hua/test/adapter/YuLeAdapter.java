@@ -35,7 +35,7 @@ public class YuLeAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public static YuLeAdapter getNewAdapter(Context tempContext){
+    public static YuLeAdapter getYuLeAdapter(Context tempContext){
     	
     	if(mNewAdapter == null){
     		mNewAdapter = new YuLeAdapter(tempContext);

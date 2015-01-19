@@ -18,9 +18,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ProgressBar;
 
+import com.hua.test.activity.BaseActivity;
+import com.hua.test.activity.DetailsActivity;
+import com.hua.test.activity.ImageDetailActivity;
 import com.hua.test.activity.R;
 import com.hua.test.adapter.CardsAnimationAdapter;
 import com.hua.test.adapter.NewAdapter;
@@ -31,6 +37,7 @@ import com.hua.test.network.http.json.NewListJson;
 import com.hua.test.network.utils.HttpUtil;
 import com.hua.test.utils.LogUtils2;
 import com.hua.test.utils.StringUtils;
+import com.hua.test.widget.swipelistview.BaseSwipeListViewListener;
 import com.hua.test.widget.swipelistview.SwipeListView;
 import com.hua.test.widget.viewimage.Animations.DescriptionAnimation;
 import com.hua.test.widget.viewimage.Animations.SliderLayout;
@@ -54,7 +61,7 @@ OnSliderClickListener{
     protected SwipeRefreshLayout swipeLayout;
     /*** 整个布局的listview*/
 //    @ViewById(R.id.listview)
-    protected SwipeListView mListView;
+    protected SwipeListView mSwipeListView;
 //    @ViewById(R.id.progressBar)
     protected ProgressBar mProgressBar;
     protected HashMap<String, String> url_maps;
@@ -153,25 +160,25 @@ OnSliderClickListener{
 	public void initContentView(View tempContentView){
 		
 		swipeLayout = (SwipeRefreshLayout) tempContentView.findViewById(R.id.swipe_container);
-		mListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
+		mSwipeListView = (SwipeListView) tempContentView.findViewById(R.id.listview);
 		mProgressBar = (ProgressBar) tempContentView.findViewById(R.id.progressBar);
 		
 //    	LogUtils2.e("*******initView*************");
     	LogUtils2.e("*******index*************== "+index);
         swipeLayout.setOnRefreshListener(this);
         InitView.instance().initSwipeRefreshLayout(swipeLayout);
-        InitView.instance().initListView(mListView, getActivity());
+        InitView.instance().initListView(mSwipeListView, getActivity());
 		///add HeadView
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.head_item, null);
         mDemoSlider = (SliderLayout) headView.findViewById(R.id.slider);
-        mListView.addHeaderView(headView);
+        mSwipeListView.addHeaderView(headView);
         
         //set the adapter of ListView
 //        newAdapter = new NewAdapter(mContext);
         newAdapter = NewAdapter.getNewAdapter(mContext);
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(newAdapter);
-        animationAdapter.setAbsListView(mListView);
-        mListView.setAdapter(animationAdapter);
+        animationAdapter.setAbsListView(mSwipeListView);
+        mSwipeListView.setAdapter(animationAdapter);
 //        buttomLayoutTabItem = MainActivityPhone.getTab_Bar_Container();
 //        buttomLayoutTabItem.setVisibility(View.GONE);
         
@@ -179,7 +186,7 @@ OnSliderClickListener{
         ///load data
         loadData(getNewUrl(index + ""));
 
-        mListView.setOnBottomListener(new OnClickListener() {
+        mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentPagte++;
@@ -189,7 +196,11 @@ OnSliderClickListener{
             }
         });
         
-        mListView.setOnScrollListener(new OnScrollListener() {
+        
+        mSwipeListView.setSwipeListViewListener(mSwipeListViewListener);
+        mSwipeListView.setOnItemClickListener(new MySwipeListViewItemListener());
+        
+        mSwipeListView.setOnScrollListener(new OnScrollListener() {
 			
 			@Override  
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -280,7 +291,7 @@ OnSliderClickListener{
 	
 	public boolean isScrollButtomItemTab(){
 		
-		View c = mListView.getChildAt(0);
+		View c = mSwipeListView.getChildAt(0);
 	    int actualyDistance = 0;
 	    int buttomTabItemHeight = 0;//buttomLayoutTabItem.getHeight();
 //	    LogUtils2.w("buttomTabItemHeight===  "+buttomTabItemHeight);
@@ -288,7 +299,7 @@ OnSliderClickListener{
 	    if (c == null) {
 	        return false;
 	    }
-	    int firstVisiblePosition = mListView.getFirstVisiblePosition();
+	    int firstVisiblePosition = mSwipeListView.getFirstVisiblePosition();
 	    int top = c.getTop();
 	    int scrollDistance = -top + firstVisiblePosition * c.getHeight();
 	    
@@ -311,7 +322,7 @@ OnSliderClickListener{
 	}
 	
 	public int getScrollY() {
-	    View c = mListView.getChildAt(0);
+	    View c = mSwipeListView.getChildAt(0);
 	    int actualyDistance = 0;
 	    int buttomTabItemHeight = 0;//buttomLayoutTabItem.getHeight();
 	    LogUtils2.w("buttomTabItemHeight===  "+buttomTabItemHeight);
@@ -319,7 +330,7 @@ OnSliderClickListener{
 	    if (c == null) {
 	        return 0;
 	    }
-	    int firstVisiblePosition = mListView.getFirstVisiblePosition();
+	    int firstVisiblePosition = mSwipeListView.getFirstVisiblePosition();
 	    int top = c.getTop();
 	    int scrollDistance = -top + firstVisiblePosition * c.getHeight();
 	    LogUtils2.e("scrollDistance === "+scrollDistance);
@@ -331,7 +342,7 @@ OnSliderClickListener{
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
-            mListView.onBottomComplete();
+            mSwipeListView.onBottomComplete();
             mProgressBar.setVisibility(View.GONE);
             getMyActivity().showShortToast(getString(R.string.not_network));
             String result = getMyActivity().getCacheStr("NewsFragment" + currentPagte);
@@ -419,7 +430,7 @@ OnSliderClickListener{
         	newAdapter.appendList(list,index);
         }
         listsModles.addAll(list);
-        mListView.onBottomComplete();
+        mSwipeListView.onBottomComplete();//TODO
     }
     
     
@@ -544,5 +555,59 @@ OnSliderClickListener{
 	public void onSliderClick(BaseSliderView slider) {
 		
 	}
+	
+	
+	/**
+	 * this is for the SwipeListView Listener
+	 */
+	BaseSwipeListViewListener mSwipeListViewListener = new BaseSwipeListViewListener() {
+		@Override
+		public void onClickFrontView(int position) {
+				Toast.makeText(mContext, "  pos== "+position, 300).show();
+			   NewModle newModle = listsModles.get(position - 1);
+		        enterDetailActivity(newModle);
+		}
+		
+		@Override
+		public void onClickBackView(int position) {
+			mSwipeListView.closeOpenedItems();// 关闭打开的项
+		}
+	};
+	
+	
+
+    public void enterDetailActivity(NewModle newModle) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("newModle", newModle);
+        Class<?> class1;
+        if (newModle.getImagesModle() != null && newModle.getImagesModle().getImgList().size() > 1) {
+           LogUtils2.i("******** ImageDetailActivity_.class**********");
+        	class1 = ImageDetailActivity.class;
+        } else {
+        	  LogUtils2.i("******** DetailsActivity_.class**********");
+            class1 = DetailsActivity.class;
+        }
+        
+        ((BaseActivity) getActivity()).openActivity(class1,
+                bundle, 0);
+        // Intent intent = new Intent(getActivity(), class1);
+        // intent.putExtras(bundle);
+        // IntentUtils.startPreviewActivity(getActivity(), intent);
+    }
+	
+	class MySwipeListViewItemListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			
+			Toast.makeText(mContext, "  pos== "+position, 300).show();
+			   NewModle newModle = listsModles.get(position - 1);
+		        enterDetailActivity(newModle);
+			
+		}
+		
+	}
+	
 	
 }

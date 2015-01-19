@@ -124,7 +124,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         
         //set the adapter of ListView
 //        newAdapter = new NewAdapter(mContext);
-        yuLeAdapter = YuLeAdapter.getNewAdapter(mContext);
+        yuLeAdapter = YuLeAdapter.getYuLeAdapter(mContext);
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(yuLeAdapter);
         animationAdapter.setAbsListView(mListView);
         mListView.setAdapter(animationAdapter);

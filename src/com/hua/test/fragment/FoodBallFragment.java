@@ -124,7 +124,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
         
         //set the adapter of ListView
 //        newAdapter = new NewAdapter(mContext);
-        foodBallAdapter = FoodBallAdapter.getNewAdapter(mContext);
+        foodBallAdapter = FoodBallAdapter.getFoodBallAdapter(mContext);
         AnimationAdapter animationAdapter = new CardsAnimationAdapter(foodBallAdapter);
         animationAdapter.setAbsListView(mListView);
         mListView.setAdapter(animationAdapter);

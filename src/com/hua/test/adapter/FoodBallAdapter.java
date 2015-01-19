@@ -35,7 +35,7 @@ public class FoodBallAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public static FoodBallAdapter getNewAdapter(Context tempContext){
+    public static FoodBallAdapter getFoodBallAdapter(Context tempContext){
     	
     	if(mNewAdapter == null){
     		mNewAdapter = new FoodBallAdapter(tempContext);

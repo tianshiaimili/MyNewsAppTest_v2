@@ -8,7 +8,7 @@
     android:gravity="center"
     >
     
-    <com.hua.news.view.PowerImageViewGif  
+    <com.hua.test.view.PowerImageViewGif  
         android:id="@+id/image_view_gif"  
         android:layout_width="wrap_content"  
         android:layout_height="wrap_content"  
