@@ -25,15 +25,24 @@ public class FoodBallAdapter extends BaseAdapter {
     	LogUtils2.d("list---"+list.size());
     	LogUtils2.i("newIndex = "+newIndex+"   oldIndex = "+oldIndex);
         if (!lists.contains(list.get(0)) && list != null && list.size() > 0 && newIndex != oldIndex) {
-            lists.addAll(list);
-            if(newIndex == 0){
-            	oldIndex = -1;
-            }else {
-            	oldIndex = newIndex;
+        	if (newIndex == 0 && lists.size() == 0) {
+				lists.addAll(list);
+				isNeedUplistsModlesData = true;
+				oldIndex = -1;
+			} else if (newIndex == 0 && lists.size() != 0) {
+
+			} else {
+				lists.addAll(list);
+				if (newIndex == 0) {
+					isNeedUplistsModlesData = true;
+					oldIndex = -1;
+				} else {
+					isNeedUplistsModlesData = true;
+					oldIndex = newIndex;
+				}
+				LogUtils2.e("*********lists.size==***== " + lists.size());
 			}
-            LogUtils2.e("*********lists.size==***== " +lists.size());
         }
-        isNeedUplistsModlesData = true;
         notifyDataSetChanged();
     }
 

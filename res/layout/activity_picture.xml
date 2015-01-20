@@ -118,10 +118,11 @@
                         android:layout_width="100dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="12.5dip"
-                        android:layout_marginRight="12.5dip"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
                         android:background="@drawable/bottom_indicate_line_color"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                         />
                     <!-- </LinearLayout> -->
 
                     <LinearLayout
@@ -154,7 +155,7 @@
                 android:background="@drawable/channel_rightblock"
                 android:visibility="visible" />
         </RelativeLayout>
-<!-- 
+        <!--
         <LinearLayout
             android:id="@+id/add_more_columns"
             android:layout_width="wrap_content"
@@ -166,7 +167,8 @@
                 android:layout_height="40.0dip"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/channel_glide_day_bg" />
-        </LinearLayout> -->
+        </LinearLayout>
+        -->
     </LinearLayout>
 
     <View
@@ -175,16 +177,14 @@
         android:layout_height="0.5dip"
         android:background="#ffdddddd" />
 
-
     <com.hua.test.widget.gesture.EnableChildSlideFrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         >
+        android:layout_height="match_parent" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        
     </com.hua.test.widget.gesture.EnableChildSlideFrameLayout>
+
 </LinearLayout>

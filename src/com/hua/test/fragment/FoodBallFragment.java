@@ -74,6 +74,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
     private int index = 0;
     private boolean isRefresh = false;
     private static final int RESPONSE_OK = 0;
+    private String cacheName =this.getClass().getSimpleName();
 
     
 	Handler mHandler = new Handler() {
@@ -135,15 +136,15 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
         mSwipeListView.setAdapter(animationAdapter);
         
         ///load data
-        loadData(getCommonUrl(index + "", Url.FootId),this.getClass().getSimpleName());
+        loadData(getCommonUrl(index + "", Url.FootId),cacheName);
 
         mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentPagte++;
                 index = index + 20;
-                LogUtils2.i("onButtomListener  the index is "+index);
-                loadData(getCommonUrl(index + "", Url.FootId),this.getClass().getSimpleName());
+                LogUtils2.i("onButtomListener  the index is "+index  +"  cacheName = "+cacheName);
+                loadData(getCommonUrl(index + "", Url.FootId),cacheName);
             }
         });
         
@@ -186,7 +187,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
     
 	/**加载数据*/
 	public void loadData(String url,String cacheFragmentName){
-		LogUtils2.e("commentUrl = "+this.getClass().getSimpleName());
+		LogUtils2.e("commentUrl = "+this.getClass().getSimpleName() +" cacheName = "+cacheName);
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
@@ -251,7 +252,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
 	
 //	    @UiThread
 	    public void getResult(String result) {
-	        getMyActivity().setCacheStr("FoodBallFragment" + currentPagte, result);
+	        getMyActivity().setCacheStr(this.getClass().getSimpleName() + currentPagte, result);
 	        if (isRefresh) {
 	            isRefresh = false;
 	            foodBallAdapter.clear();
@@ -324,7 +325,7 @@ public class FoodBallFragment extends BaseFragment implements SwipeRefreshLayout
                 currentPagte = 1;
                 isRefresh = true;
                 index = 0;
-                loadData(getCommonUrl(0 + "", Url.FootId),this.getClass().getSimpleName());
+                loadData(getCommonUrl(0 + "", Url.FootId),cacheName);
                 url_maps.clear();
                 mDemoSlider.removeAllSliders();
             }

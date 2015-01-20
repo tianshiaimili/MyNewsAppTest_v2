@@ -73,16 +73,23 @@ public class ColumnHorizontalScrollView extends HorizontalScrollView {
 
     /**
      * 传入父类布局中的资源文件
+     * @param
+     * @param mScreenWitdh 屏幕宽度
+     * @param content 传入整体布局
+     * @param mleftImage 左阴影图片
+     * @param mRightImage 右阴影图片
+     * @param plus 传入更多栏目选择布局
+     * @param columnLayout 传入拖动栏布局
      */
-    public void setParam(Activity activity, int mScreenWitdh, View paramView1,
-            ImageView paramView2, ImageView paramView3, View paramView4, View paramView5) {
+    public void setParam(Activity activity, int mScreenWitdh, View content,
+            ImageView mLeftImage, ImageView mRightImage, View plus, View columnLayout) {
         this.activity = activity;
         this.mScreenWitdh = mScreenWitdh;
-        ll_content = paramView1;
-        leftImage = paramView2;
-        rightImage = paramView3;
-        ll_more = paramView4;
-        rl_column = paramView5;
+        ll_content = content;
+        leftImage = mLeftImage;
+        rightImage = mRightImage;
+        ll_more = plus;
+        rl_column = columnLayout;
     }
 
     /**

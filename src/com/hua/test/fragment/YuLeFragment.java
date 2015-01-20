@@ -76,6 +76,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private boolean isRefresh = false;
     private static final int RESPONSE_OK = 0;
 
+    private String cacheName =this.getClass().getSimpleName();
     
 	Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -136,7 +137,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mSwipeListView.setAdapter(animationAdapter);
         
         ///load data
-        loadData(getCommonUrl(index + "", Url.YuLeId),this.getClass().getSimpleName());
+        loadData(getCommonUrl(index + "", Url.YuLeId),cacheName);
 
         mSwipeListView.setOnBottomListener(new OnClickListener() {
             @Override
@@ -144,7 +145,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 currentPagte++;
                 index = index + 20;
                 LogUtils2.i("onButtomListener  the index is "+index);
-                loadData(getCommonUrl(index + "", Url.YuLeId),this.getClass().getSimpleName());
+                loadData(getCommonUrl(index + "", Url.YuLeId),cacheName);
             }
         });
         
@@ -187,7 +188,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     
 	/**加载数据*/
 	public void loadData(String url,String cacheFragmentName){
-		LogUtils2.e("commentUrl = "+this.getClass().getSimpleName());
+		LogUtils2.e("commentUrl = "+this.getClass().getSimpleName()+"   cacheName ="+cacheName);
         if (getMyActivity().hasNetWork()) {
             loadNewList(url);
         } else {
@@ -252,7 +253,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 	
 //	    @UiThread
 	    public void getResult(String result) {
-	        getMyActivity().setCacheStr("FoodBallFragment" + currentPagte, result);
+	        getMyActivity().setCacheStr(this.getClass().getSimpleName()+ currentPagte, result);
 	        if (isRefresh) {
 	            isRefresh = false;
 	            yuLeAdapter.clear();
@@ -325,7 +326,7 @@ public class YuLeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 currentPagte = 1;
                 isRefresh = true;
                 index = 0;
-                loadData(getCommonUrl(0 + "", Url.YuLeId),this.getClass().getSimpleName());
+                loadData(getCommonUrl(0 + "", Url.YuLeId),cacheName);
                 url_maps.clear();
                 mDemoSlider.removeAllSliders();
             }

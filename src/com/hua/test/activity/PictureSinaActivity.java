@@ -2,6 +2,7 @@ package com.hua.test.activity;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,11 +24,14 @@ import com.hua.test.adapter.NewsFragmentPagerAdapter;
 import com.hua.test.app.App;
 import com.hua.test.bean.ChannelItem;
 import com.hua.test.bean.ChannelManage;
+import com.hua.test.contants.MyConstants;
+import com.hua.test.fragment.PictureSinaMeiTuFragment;
 import com.hua.test.fragment.TestFragment;
 import com.hua.test.utils.LogUtils2;
 import com.hua.test.view.ColumnHorizontalScrollView;
+import com.hua.test.widget.swipeback.SwipeBackActivity;
 
-public class PictureSinaActivity extends BaseActivity{
+public class PictureSinaActivity extends SwipeBackActivity{
 
 //    @ViewById(R.id.vPager)
     protected ViewPager mViewPager;
@@ -55,7 +60,7 @@ public class PictureSinaActivity extends BaseActivity{
     private int mScreenWidth = 0;
     /**头部horizontal上 的Item宽度 */
     private int item_width = 0;
-    /**Bar 水平部分滑动的距离*/
+    /**Bar 水平部分滑动的距离*/ 
     private int scroll_distance = 0;
     private int bottom_indicate_line_duration =150;
 	
@@ -80,7 +85,7 @@ public class PictureSinaActivity extends BaseActivity{
     private int itemCount = 4;
 	
     /** 用户选择的新闻分类列表 即在水平Bar上的内容item */
-    private String[] itemTitles = {"精选","趣图","美图","故事"};
+//    private String[] itemTitles = {"美图","趣图","精选","故事"};
     private ArrayList<String> pictureTitles;
 	
     /***/
@@ -91,19 +96,18 @@ public class PictureSinaActivity extends BaseActivity{
     	mRadioGroup_content = (LinearLayout) findViewById(R.id.mRadioGroup_content);
     	buttom_indicate_line = (LinearLayout) findViewById(R.id.bottom_indicate_line);
         mScreenWidth = getResources().getDisplayMetrics().widthPixels;
-        item_width = (int) (mScreenWidth / itemCount + 0.5f); // 一个Item宽度为屏幕的1/7
-        buttom_indicate_line.getLayoutParams().width = item_width;
+//        item_width = (int) (mScreenWidth / itemCount + 0.5f); // 一个Item宽度为屏幕的1/7
+//        buttom_indicate_line.getLayoutParams().width = item_width;
     	//
     	initViewPage();
-
-    	
     }
 
     public void initViewPage(){
-    	mViewPager = (ViewPager) findViewById(R.id.vPager);
-        mViewPager.setOffscreenPageLimit(2);
         mNewsFragmentPagerAdapter = new NewsFragmentPagerAdapter(
                 getSupportFragmentManager());
+    	mViewPager = (ViewPager) findViewById(R.id.vPager);
+        mViewPager.setOffscreenPageLimit(2);
+
         mViewPager.setAdapter(mNewsFragmentPagerAdapter);
         mViewPager.setCurrentItem(0);
         mViewPager.setOnPageChangeListener(pageListener);
@@ -240,17 +244,19 @@ public class PictureSinaActivity extends BaseActivity{
     /***/
     public void initFragments() {
         fragments = new ArrayList<Fragment>();
+        fragments.add(new PictureSinaMeiTuFragment());
         fragments.add(new TestFragment());
         fragments.add(new TestFragment());
         fragments.add(new TestFragment());
-        fragments.add(new TestFragment());
+        LogUtils2.i("mNewsFragmentPagerAdapter == "+mNewsFragmentPagerAdapter);
+        LogUtils2.i("fragments.size == "+fragments.size());
         mNewsFragmentPagerAdapter.appendList(fragments);
     }
     
     /** 获取Column栏目 数据  这里直接设置成 hard code*/
     private void initColumnData() {
         pictureTitles = new ArrayList<String>();
-        for(String title : itemTitles){
+        for(String title : MyConstants.Picture_Item_Titles){
         	pictureTitles.add(title);
         }
     }
@@ -258,16 +264,18 @@ public class PictureSinaActivity extends BaseActivity{
     /**
      * 初始化水平BarColumnItem的栏目项
      */
-    private void initTabColumn() {
+    @SuppressLint("NewApi")
+	private void initTabColumn() {
         mRadioGroup_content.removeAllViews();
         int count = pictureTitles.size();
-        mColumnHorizontalScrollView.setParam(this, mScreenWidth, mRadioGroup_content, null,
-                null, null, null);
+//        mColumnHorizontalScrollView.setParam(this, mScreenWidth, null, null,
+//                null, null, null);
         for (int i = 0; i < count; i++) {
-            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(item_width,
+            final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                     LayoutParams.WRAP_CONTENT);
-            params.leftMargin = 5;
-            params.rightMargin = 5;
+//            params.leftMargin = 5;
+//            params.rightMargin = 5;
+            params.weight = 1;
             // TextView localTextView = (TextView)
             // mInflater.inflate(R.layout.column_radio_item, null);
             final TextView columnTextView = new TextView(this);
@@ -275,7 +283,7 @@ public class PictureSinaActivity extends BaseActivity{
             // localTextView.setBackground(getResources().getDrawable(R.drawable.top_category_scroll_text_view_bg));
             columnTextView.setBackgroundResource(R.drawable.radio_buttong_bg);
             columnTextView.setGravity(Gravity.CENTER);
-            columnTextView.setPadding(5, 5, 5, 5);
+//            columnTextView.setPadding(5, 5, 5, 5);
             columnTextView.setId(i);
             columnTextView.setText(pictureTitles.get(i));
             columnTextView.setTextColor(getResources().getColorStateList(
@@ -298,21 +306,27 @@ public class PictureSinaActivity extends BaseActivity{
                     }
                 }
             });
-            
+            final FrameLayout.LayoutParams mRadioGroup_contentParams = new FrameLayout.LayoutParams(mScreenWidth,
+                    LayoutParams.WRAP_CONTENT);
+            mRadioGroup_contentParams.gravity = Gravity.CENTER_VERTICAL;
+            mRadioGroup_content.setLayoutParams(mRadioGroup_contentParams);
             mRadioGroup_content.addView(columnTextView, i, params);
+            
+            
             if(!isGet_Scroll_Distance){
             	isGet_Scroll_Distance = true;
             	ViewTreeObserver vto2 = columnTextView.getViewTreeObserver(); 
             	vto2.addOnGlobalLayoutListener(new OnGlobalLayoutListener() { 
             		@Override 
             		public void onGlobalLayout() { 
-            			columnTextView.getViewTreeObserver().removeGlobalOnLayoutListener(this); 
-//            textView.append("\n\n"+imageView.getHeight()+","+imageView.getWidth()); 
-            			int margin_distance = params.leftMargin + params.rightMargin;
-            			LogUtils2.e("margin_distance  ="+margin_distance);
-//            			contentView.getWidth();
-            			scroll_distance = item_width + margin_distance;
-            			LogUtils2.e("scroll_distance  ="+scroll_distance);
+            			columnTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this); 
+
+            	        item_width = columnTextView.getWidth(); // 一个Item宽度为屏幕的1/7
+//            	        LogUtils2.i("margin2.item_width  = "+item_width);
+            	        buttom_indicate_line.getLayoutParams().width = item_width;
+            			scroll_distance = item_width; 
+            			
+//            			LogUtils2.e("scroll_distance11  ="+scroll_distance);
             		} 
             	});
             }
@@ -326,7 +340,7 @@ public class PictureSinaActivity extends BaseActivity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_picture);
-		initFragments();
+//		initFragments();
 		initContentView();
 		setChangelView() ;
 	}

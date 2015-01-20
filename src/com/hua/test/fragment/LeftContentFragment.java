@@ -15,6 +15,7 @@ import com.hua.test.activity.MainActivityPhone;
 import com.hua.test.activity.PictureSinaActivity;
 import com.hua.test.activity.R;
 import com.hua.test.activity.TestActivity;
+import com.hua.test.activity.VideoActivity;
 import com.hua.test.activity.WelcomeActivity;
 import com.hua.test.utils.LogUtils2;
 /**
@@ -89,7 +90,7 @@ public class LeftContentFragment extends Fragment implements OnClickListener {
 
 	// @Click(R.id.video)
 	public void enterVideo(View view) {
-		context.startActivity(new Intent(context, TestActivity.class));
+		context.startActivity(new Intent(context, VideoActivity.class));
 		isShow();
 	}
 

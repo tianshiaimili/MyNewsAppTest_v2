@@ -98,6 +98,8 @@ OnSliderClickListener{
     private boolean isDownAnimationOver;
     private boolean isUpAnimationOver;
 	private TranslateAnimation anim;
+	
+	private String cacheName =this.getClass().getSimpleName();
     
 	Handler mHandler = new Handler() {
 		public void handleMessage(Message message) {
@@ -157,8 +159,8 @@ OnSliderClickListener{
             public void onClick(View v) {
                 currentPagte++;
                 index = index + 20;
-                LogUtils2.i("onButtomListener  the index is "+index);
-                loadData(getNewUrl(index + ""),this.getClass().getSimpleName());
+                LogUtils2.i("cacheFragmentName onButtomListener  the index is "+index+"   name == "+cacheName);
+                loadData(getNewUrl(index + ""),cacheName);
             }
         });
         
@@ -317,7 +319,9 @@ OnSliderClickListener{
             mSwipeListView.onBottomComplete();
             mProgressBar.setVisibility(View.GONE);
             getMyActivity().showShortToast(getString(R.string.not_network));
+            LogUtils2.i("cacheFragmentName = "+cacheFragmentName);
             String result = getMyActivity().getCacheStr(cacheFragmentName + currentPagte);
+            LogUtils2.i("what is the result = "+result);
             if (!StringUtils.isEmpty(result)) {
                 getResult(result);
             }
@@ -383,7 +387,7 @@ OnSliderClickListener{
 
 //    @UiThread
     public void getResult(String result) {
-        getMyActivity().setCacheStr("NewsFragment" + currentPagte, result);
+        getMyActivity().setCacheStr("HeadNewsFragment" + currentPagte, result);
         if (isRefresh) {
             isRefresh = false;
             newAdapter.clear();
