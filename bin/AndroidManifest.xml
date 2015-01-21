@@ -82,6 +82,15 @@
             android:theme="@style/Default.SwipeBack.NoTitleBar" >
         </activity>
         <activity
+            android:name="com.hua.test.activity.PicuterDetailActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Default.SwipeBack.NoTitleBar" >
+        </activity>
+        <activity
             android:name="com.hua.test.activity.VideoActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
